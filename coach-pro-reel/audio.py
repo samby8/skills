@@ -1,10 +1,12 @@
 import numpy as np, wave
-SR = 44100; DUR = 35.0; N = int(SR * DUR)
+SR = 44100; DUR = 15 + 20 * 1.45
+def M(t): return t if t <= 15 else 15 + (t - 15) * 1.45
+N = int(SR * DUR)
 rng = np.random.default_rng(7)
 L = np.zeros(N); R = np.zeros(N)
 
-def add(sig, t, gain=1.0, pan=0.0):
-    i = int(t * SR); j = min(N, i + len(sig))
+def add(sig, t, gain=1.0, pan=0.0, raw=False):
+    i = int((t if raw else M(t)) * SR); j = min(N, i + len(sig))
     if j <= i: return
     s = sig[:j - i] * gain
     L[i:j] += s * (1 - max(0, pan)); R[i:j] += s * (1 + min(0, pan))
@@ -78,20 +80,20 @@ t0 = 0.0; i = 0
 while t0 < DUR:
     c = chords[i % 4]
     g = .55 if t0 < 3.6 else 1.0
-    add(pad(c, bar + .4), t0, g)
+    add(pad(c, bar + .4), t0, g, raw=True)
     bt = tt(bar); bs = np.sin(2*np.pi*bass[i % 4]*bt) * .9 + np.sin(4*np.pi*bass[i % 4]*bt) * .2
     bs *= env(len(bt), .02, .2) * .16
-    if t0 >= 3.4: add(bs, t0)
+    if t0 >= 3.4: add(bs, t0, raw=True)
     t0 += bar; i += 1
 
-def drop(t): return 25.1 <= t < 26.0 or t >= 34.0
+def drop(t): return M(25.1) <= t < M(26.0) or t >= DUR - 1.0
 b = 0; t = 3.6
 while t < DUR:
     if not drop(t):
-        if b % 4 in (0, 2) or (t > 15.4 and b % 2 == 0): add(kick(), t, .7)
-        add(hat(), t + beat / 2, .35, .2)
-        if b % 4 in (1, 3): add(clap(), t, .3, -.1)
-        if t > 27.4: add(hat(), t, .22, -.2)
+        if b % 4 in (0, 2) or (t > 15.4 and b % 2 == 0): add(kick(), t, .7, raw=True)
+        add(hat(), t + beat / 2, .35, .2, raw=True)
+        if b % 4 in (1, 3): add(clap(), t, .3, -.1, raw=True)
+        if t > M(27.4): add(hat(), t, .22, -.2, raw=True)
     t += beat; b += 1
 # clock ticks in the hook and under the decision timer
 for k in range(8): add(tick(), .2 + k * .45, .55)

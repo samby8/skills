@@ -12,10 +12,10 @@ FONTS = {
     "inter": "/usr/share/fonts/opentype/inter/InterDisplay-Black.otf",
     "interb": "/usr/share/fonts/opentype/inter/InterDisplay-Bold.otf",
 }
-NAVY = (11, 18, 32); NAVY2 = (22, 33, 58); CARD = (24, 36, 62)
-LIME = (198, 244, 50); GOLD = (245, 184, 61); CORAL = (255, 90, 95)
-WHITE = (244, 247, 251); GREY = (150, 163, 186); US = (234, 242, 255)
-PITCH = (16, 61, 45)
+NAVY = (16, 40, 28); NAVY2 = (30, 80, 56); CARD = (31, 84, 58)
+LIME = (242, 183, 5); GOLD = (160, 222, 184); CORAL = (255, 90, 95)
+WHITE = (247, 250, 248); GREY = (186, 210, 196); US = (247, 250, 248)
+PITCH = (47, 106, 71)
 
 # ---------- easing ----------
 def cl(x): return 0.0 if x < 0 else 1.0 if x > 1 else x
@@ -121,7 +121,7 @@ def darken(fr, x0, y0, x1, y1, a, color=NAVY):
 # ---------- background ----------
 def make_bg():
     y = np.linspace(0, 1, H)[:, None, None]
-    top, bot = np.array([14, 24, 44.]), np.array([7, 11, 20.])
+    top, bot = np.array([30, 76, 52.]), np.array([15, 42, 28.])
     bg = top * (1 - y) + bot * y + np.zeros((1, W, 1))
     yy, xx = np.mgrid[0:H, 0:W]
     r = np.sqrt(((xx - W/2) / W) ** 2 + ((yy - H*0.42) / H) ** 2)
@@ -292,7 +292,7 @@ def draw_board(fr, t):
         if k == "LW": sc *= lerp(1, .5, eio(pr(t, 16.3, 16.7)))
         x, y = S(*ppos("u", k, t))
         col = LIME if (k == "C8L" and t > RUN[0] - .2) else US
-        blit(fr, disc(R, col, (40, 60, 90), max(2, int(3*s))), x, y, pa, scale=sc)
+        blit(fr, disc(R, col, (20, 50, 34), max(2, int(3*s))), x, y, pa, scale=sc)
     # new winger
     na = eo(pr(t, 16.6, 16.95)) * a
     if na > 0:
@@ -328,7 +328,7 @@ def draw_header(fr, t):
     pill_t = text("حالة تكتيكية  ·  رقم 27", "bold", 34, LIME)
     pill = rrect(pill_t.shape[1] + 30, 64, 32, NAVY2, LIME, 2)
     blit(fr, pill, 540, 128, a); blit(fr, pill_t, 540, 128, a)
-    sb = rrect(820, 140, 34, CARD, (52, 70, 104), 2)
+    sb = rrect(820, 140, 34, CARD, (74, 128, 98), 2)
     y = 262
     blit(fr, sb, 540, y, a)
     secs = int(max(0, t - 4.0))
@@ -359,7 +359,7 @@ def draw_bench(fr, t):
         sc = eback(pr(t, 7.9 + i*.12, 8.3 + i*.12))
         tt = text(lbl, "bold", 38, WHITE); bx = rrect(290, 86, 43, CARD, GOLD, 2)
         blit(fr, bx, x, y, ca, scale=sc)
-        blit(fr, disc(13, US, (40, 60, 90), 2), x + 112, y, ca, scale=sc)
+        blit(fr, disc(13, US, (20, 50, 34), 2), x + 112, y, ca, scale=sc)
         blit(fr, tt, x - 18, y, ca, scale=sc)
 
 # ---------- caption strip ----------
@@ -382,7 +382,7 @@ def draw_options(fr, t):
     ba, _ = win(t, 11.0, 13.4, .3, .2)
     if ba > 0:
         bw = int(640 * (1 - pr(t, 11.2, 13.25)))
-        blit(fr, rrect(640, 12, 6, (45, 60, 90)), 540, 1118, ba)
+        blit(fr, rrect(640, 12, 6, (60, 110, 82)), 540, 1118, ba)
         if bw > 12: blit(fr, rrect(bw, 12, 6, GOLD), 540 + (640 - bw)/2, 1118, ba)
     pick = 13.3
     for i, (L, s) in enumerate(OPTS):
@@ -397,7 +397,7 @@ def draw_options(fr, t):
             k = eo(pr(t, pick, pick + .25))
             sc = 1 + .04 * math.sin(pr(t, pick, pick + .35) * math.pi)
             blit(fr, glow(330, LIME, .5), 540, y, a * k)
-            blit(fr, rrect(960, 150, 32, CARD, (60, 80, 118), 2), 540, y, fa * (1 - k), scale=sc)
+            blit(fr, rrect(960, 150, 32, CARD, (74, 128, 98), 2), 540, y, fa * (1 - k), scale=sc)
             blit(fr, rrect(960, 150, 32, LIME), 540, y, a * k, scale=sc)
             blit(fr, text(s, "black", 46, NAVY), 900 - 18, y, a, anchor="r")
             blit(fr, disc(40, NAVY), 960, y, a)
@@ -409,9 +409,9 @@ def draw_options(fr, t):
                 pts = [p0, p1, p2]
                 draw_arrow(fr, pts, ck, NAVY, 9, head=False)
         else:
-            blit(fr, rrect(960, 150, 32, CARD, (60, 80, 118), 2), 540, y, fa)
+            blit(fr, rrect(960, 150, 32, CARD, (74, 128, 98), 2), 540, y, fa)
             blit(fr, text(s, "bold", 46, WHITE), 900 - 18, y, fa, anchor="r")
-            blit(fr, disc(40, LIME, NAVY2, 0) if False else disc(40, (40, 56, 88)), 960, y, fa)
+            blit(fr, disc(40, LIME, NAVY2, 0) if False else disc(40, (52, 104, 76)), 960, y, fa)
             blit(fr, text(L, "black", 44, LIME), 960, y + 2, fa)
     # tap ripple
     if pick - .05 < t < pick + .6:
@@ -431,7 +431,7 @@ def draw_change(fr, t):
         a, p = win(t, t0, end, .4, .3)
         if a <= 0: continue
         yy = y + (1 - p) * 50
-        blit(fr, rrect(960, 160, 34, CARD, (60, 80, 118), 2), 540, yy, a)
+        blit(fr, rrect(960, 160, 34, CARD, (74, 128, 98), 2), 540, yy, a)
         blit(fr, text(cond, "bold", 42, WHITE), 1000, yy, a, anchor="r")
         k = eo(pr(t, t0 + .45, t0 + .9))
         if k > 0 and a > .6: draw_arrow(fr, [(470, yy), (lerp(470, 405, k), yy)], k, GREY, 5)
@@ -461,7 +461,7 @@ def draw_value(fr, t):
         a, p = win(t, t0, end, .35, .3)
         if a <= 0: continue
         y = 930 + i * 190; xo = (1 - p) * 60
-        blit(fr, rrect(900, 150, 34, CARD, (60, 80, 118), 2), 540 - xo * 0, y, a)
+        blit(fr, rrect(900, 150, 34, CARD, (74, 128, 98), 2), 540 - xo * 0, y, a)
         sc = eback(pr(t, t0 + .1, t0 + .45))
         blit(fr, disc(42, LIME), 910, y, a, scale=max(.01, sc))
         if sc > .3:
@@ -485,24 +485,35 @@ def logo_icon(sz=230):
     d.line(pts, fill=n, width=w//2, joint="curve")
     return np.array(im.resize((sz, sz), Image.LANCZOS))
 
+def make_logo():
+    im = np.array(Image.open("/home/user/skills/coach-pro-reel/assets/logo.png").convert("RGB")).astype(np.float32)
+    bg = im[5, 5].copy()
+    im = im[236:950, 296:910]
+    d = np.abs(im - bg).max(2)
+    a = np.clip(d / 70.0, 0, 1)
+    col = (im - (1 - a[..., None]) * bg) / np.maximum(a[..., None], 1e-3)
+    col = np.clip(col, 0, 255)
+    out = np.zeros(im.shape[:2] + (4,), np.uint8)
+    out[..., :3] = col.astype(np.uint8); out[..., 3] = (a * 255).astype(np.uint8)
+    return out
+LOGO = make_logo()
+
 def draw_outro(fr, t):
     if t < 30.9: return
     end = DUR + 1
     a = eo(pr(t, 31.0, 31.5))
-    sc = eback(pr(t, 31.0, 31.55))
-    blit(fr, glow(420, LIME, .25), 540, 700, a)
-    blit(fr, logo_icon(), 540, 700, a, scale=max(.01, sc))
-    tx(fr, t, "Coach Pro", "inter", 128, 540, 930, 31.3, end, WHITE)
-    tx(fr, t, "المدرب برو", "black", 92, 540, 1060, 31.5, end, LIME)
-    tx(fr, t, "منصة عربية لتطوير المدرب نفسه", "bold", 48, 540, 1215, 31.9, end, GREY)
-    tx(fr, t, "لا لتزويده بتمارين جاهزة", "bold", 48, 540, 1280, 32.05, end, GREY)
-    ca, p = win(t, 32.5, end, .4, .2)
+    sc = eback(pr(t, 31.0, 31.6), 1.3)
+    blit(fr, glow(460, LIME, .16), 540, 800, a)
+    blit(fr, LOGO, 540, 790, a, scale=max(.01, lerp(.7, 1.05, sc)))
+    tx(fr, t, "منصة عربية لتطوير المدرب نفسه", "bold", 48, 540, 1235, 31.8, end, GREY)
+    tx(fr, t, "لا لتزويده بتمارين جاهزة", "bold", 48, 540, 1300, 31.95, end, GREY)
+    ca, p = win(t, 32.4, end, .4, .2)
     if ca > 0:
         ct = text("ابدأ أول حالة الآن", "black", 52, NAVY)
-        pulse = 1 + .03 * math.sin((t - 32.5) * 5)
-        sc = lerp(.7, 1, eback(pr(t, 32.5, 32.95))) * pulse
-        blit(fr, rrect(560, 110, 55, LIME), 540, 1480, ca, scale=sc)
-        blit(fr, ct, 540, 1480, ca, scale=sc)
+        pulse = 1 + .03 * math.sin((t - 32.4) * 4)
+        sc = lerp(.7, 1, eback(pr(t, 32.4, 32.85))) * pulse
+        blit(fr, rrect(560, 110, 55, LIME), 540, 1490, ca, scale=sc)
+        blit(fr, ct, 540, 1490, ca, scale=sc)
 
 # ---------- hook ----------
 def draw_hook(fr, t):
@@ -557,6 +568,11 @@ def draw_captions(fr, t):
     cap(fr, t, "العرض يصنع العمق", 20.4, 21.8, LIME, 84, 1525)
     cap_small(fr, t, "وهنا لا تنتهي الحالة…", 20.7, 21.8, GREY, 40, 1640)
 
+SPLIT, STRETCH = 15.0, 1.45
+OUT_DUR = SPLIT + (DUR - SPLIT) * STRETCH
+def remap(T):  # output time -> internal time
+    return T if T <= SPLIT else SPLIT + (T - SPLIT) / STRETCH
+
 def frame(t):
     fr = BG.copy()
     draw_hook(fr, t)
@@ -578,14 +594,14 @@ def frame(t):
 if __name__ == "__main__":
     if len(sys.argv) > 1 and sys.argv[1] == "preview":
         for ts in sys.argv[2:]:
-            Image.fromarray(frame(float(ts))).save(f"/tmp/reel/prev_{ts}.jpg", quality=88)
+            Image.fromarray(frame(remap(float(ts)))).save(f"/tmp/reel/prev_{ts}.jpg", quality=88)
         sys.exit()
     out = sys.argv[1] if len(sys.argv) > 1 else "/tmp/reel/video.mp4"
     p = subprocess.Popen(["ffmpeg", "-v", "error", "-y", "-f", "rawvideo", "-pix_fmt", "rgb24", "-s", f"{W}x{H}",
                           "-r", str(FPS), "-i", "-", "-c:v", "libx264", "-preset", "medium", "-crf", "17",
                           "-pix_fmt", "yuv420p", out], stdin=subprocess.PIPE)
-    n = int(DUR * FPS)
+    n = int(OUT_DUR * FPS)
     for i in range(n):
-        p.stdin.write(frame(i / FPS).tobytes())
+        p.stdin.write(frame(remap(i / FPS)).tobytes())
         if i % 150 == 0: print(i, "/", n, flush=True)
     p.stdin.close(); p.wait()
